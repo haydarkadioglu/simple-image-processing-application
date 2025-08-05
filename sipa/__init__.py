@@ -8,7 +8,7 @@ advanced image processing libraries (except numpy).
 Author: Haydar Kadıoğlu
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "Haydar Kadıoğlu"
 __email__ = "haydarkadioglu@example.com"
 

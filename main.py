@@ -1,16 +1,42 @@
-from Ui_MainWindow import Ui_MainWindow
+"""
+SIPA - Simple Image Processing Application
+Main entry point for standalone application usage.
+"""
 
-
+try:
+    from design.Ui_MainWindow import Ui_MainWindow
+except ImportError:
+    from Ui_MainWindow import Ui_MainWindow
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QShortcut
 from PyQt5.QtGui import QPixmap, QImage, QKeySequence
 from PyQt5.QtCore import Qt
 
+# Try to import from the new sipa package structure first
+try:
+    from sipa.core import Colors, Filters, Histogram, Rotate, Aritmatich
+    print("Using new sipa package structure")
+except ImportError:
+    # Fallback to old Functions import for backward compatibility
+    try:
+        from Functions import SIP as sip
+        Colors = Colors
+        Filters = Filters
+        Histogram = Histogram
+        Rotate = Rotate
+        Aritmatich = Aritmatich
+        print("Using legacy Functions import")
+    except ImportError:
+        # Last resort: direct imports
+        from Functions.colors import Colors
+        from Functions.filters import Filters
+        from Functions.hist import Histogram  
+        from Functions.rotate import Rotate
+        from Functions.aritmatich import Aritmatich
+        print("Using direct Functions imports")
 
-from Functions import SIP as sip
 import numpy as np
 import matplotlib.pyplot as plt
-
 from cv2 import imwrite
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -202,13 +228,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.imageVArray = self.imageVersions[self.imageIndex]
 
     def convertGray(self):
-
         img = self.imageVArray
         che = self.check()
         if che:return
-        img = sip.Colors.convert_to_gray(img)
-
-
+        img = Colors.convert_to_gray(img)
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -221,7 +244,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img = self.imageGrayArray
         che = self.check(isgray=True, isempyt=True, isint=True,input=self.lineEdit_binary.text())
         if che:return
-        img = sip.Colors.convert_to_binary(img, int(self.lineEdit_binary.text()))
+        img = Colors.convert_to_binary(img, int(self.lineEdit_binary.text()))
 
        
         self.displayImage(pixmap=self.convert(arrays=img))
@@ -233,7 +256,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img = self.imageGrayArray
         che = self.check(isgray=True, isempyt=True, isint=True,input=self.lineEdit_binary.text())
         if che:return
-        img = sip.Colors.single_threshold(img, int(self.lineEdit_thresh.text()))
+        img = Colors.single_threshold(img, int(self.lineEdit_thresh.text()))
 
        
         self.displayImage(pixmap=self.convert(arrays=img))
@@ -246,7 +269,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         che = self.check(isgray=True, isempyt=True, islist=True,lenght=3,input=self.lineEdit_thresh_2.text().split(","))
         if che:return
         values = self.lineEdit_thresh_2.text().split(",")
-        img = sip.Colors.double_threshold(img, int(values[0]), int(values[1]), int(values[2]))
+        img = Colors.double_threshold(img, int(values[0]), int(values[1]), int(values[2]))
 
        
         self.displayImage(pixmap=self.convert(arrays=img))
@@ -259,7 +282,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         che = self.check(isempyt=True, islist=True, input=self.lineEdit_transformation.text().split(","), lenght=3)
         if che:return
         values = self.lineEdit_transformation.text().split(",")
-        img = sip.Colors.rgb_transformation(img, b=int(values[2]), g=int(values[1]), r=int(values[0]))
+        img = Colors.rgb_transformation(img, b=int(values[2]), g=int(values[1]), r=int(values[0]))
 
         self.displayImage(pixmap=self.convert(arrays=img))
         self.imageVersions.append(img)
@@ -273,7 +296,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che:return
         value = float(self.lineEdit_contrast.text())
 
-        img = sip.Colors.increase_contrast(img, value)
+        img = Colors.increase_contrast(img, value)
         
         self.displayImage(pixmap=self.convert(arrays=img))
         self.imageVersions.append(img)
@@ -285,7 +308,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img = self.imageVArray
         che = self.check()
         if che:return
-        img = sip.Rotate.rotate_image(img)
+        img = Rotate.rotate_image(img)
         self.displayImage(pixmap=self.convert(arrays=img))
         self.imageVersions.append(img)
         self.update()
@@ -304,7 +327,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         values = self.lineEdit_crop.text().split(",")
         
 
-        img = sip.Rotate.crop(img, int(values[0]), int(values[1]), int(values[2]), int(values[3]))
+        img = Rotate.crop(img, int(values[0]), int(values[1]), int(values[2]), int(values[3]))
         self.displayImage(pixmap=self.convert(arrays=img))
         self.imageVersions.append(img)
         self.update()
@@ -314,7 +337,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         che = self.check(isempyt=True, input=self.lineEdit_zoom.text(), isfloat=True)
         if che:return
         value = self.lineEdit_zoom.text()
-        img = sip.Rotate.zoom(img, float(value))
+        img = Rotate.zoom(img, float(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -331,7 +354,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         value = self.lineEdit_mean.text()
 
 
-        img = sip.Filters.mean_filter(img,int(value))
+        img = Filters.mean_filter(img,int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -348,7 +371,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         value = self.lineEdit_median.text()
 
 
-        img = sip.Filters.median_filter(img,int(value))
+        img = Filters.median_filter(img,int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -362,7 +385,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         value = self.lineEdit_saltpepper.text()
 
 
-        img = sip.Filters.salt_pepper(img,int(value))
+        img = Filters.salt_pepper(img,int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -379,7 +402,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che1 and che2: return
 
 
-        img = sip.Filters.unsharp_mask(img,float(values[0]),float(values[1]))
+        img = Filters.unsharp_mask(img,float(values[0]),float(values[1]))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -392,7 +415,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che:return
 
 
-        img = sip.Filters.detect_edge_prewitt(img)
+        img = Filters.detect_edge_prewitt(img)
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -412,7 +435,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             pixmap = QPixmap(filename)            
             self.secondImage = self.convert(pixmap=pixmap)
         img = self.imageVArray
-        img = sip.Aritmatich.add_weighted(img, float(values[0]), self.secondImage, float(values[0]))
+        img = Aritmatich.add_weighted(img, float(values[0]), self.secondImage, float(values[0]))
         self.displayImage(pixmap=self.convert(arrays=img))
 
         self.imageVersions.append(img)
@@ -428,7 +451,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         
         img = self.imageVArray
-        img = sip.Aritmatich.divide(img, self.secondImage)
+        img = Aritmatich.divide(img, self.secondImage)
         self.displayImage(pixmap=self.convert(arrays=img))
 
         self.imageVersions.append(img)
@@ -442,7 +465,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che:return
         value  = self.lineEdit_Merode.text()
 
-        img = sip.Histogram.erode(self.imageVArray, int(value))
+        img = Histogram.erode(self.imageVArray, int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -455,7 +478,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che:return
         value  = self.lineEdit_Mdilate.text()
 
-        img = sip.Histogram.dilate(self.imageVArray, int(value))
+        img = Histogram.dilate(self.imageVArray, int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -468,7 +491,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che:return
         value  = self.lineEdit_Mopen.text()
 
-        img = sip.Histogram.opening(self.imageVArray, int(value))
+        img = Histogram.opening(self.imageVArray, int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -481,7 +504,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if che:return
         value  = self.lineEdit_Mclose.text()
 
-        img = sip.Histogram.closing(self.imageVArray, int(value))
+        img = Histogram.closing(self.imageVArray, int(value))
 
         self.displayImage(pixmap=self.convert(arrays=img))
 
@@ -492,7 +515,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img = self.imageVArray
         che = self.check(isgray=True)
         if che:return
-        img = sip.Histogram.histogram_equalization(img)
+        img = Histogram.histogram_equalization(img)
         self.displayImage(pixmap=self.convert(arrays=img))
 
         self.imageVersions.append(img)
@@ -502,7 +525,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img = self.imageVArray
         che = self.check(isgray=True)
         if che:return
-        img = sip.Histogram.histogram_stretching(img)
+        img = Histogram.histogram_stretching(img)
         self.displayImage(pixmap=self.convert(arrays=img))
 
         self.imageVersions.append(img)
@@ -512,25 +535,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         img = self.imageVArray
         che = self.check(isgray=True)
         if che:return
-        value = sip.Histogram.calculate_gray_histogram(img)
+        value = Histogram.calculate_gray_histogram(img)
         self.plot_histogram(value, "black")
     def showHistRed(self):
         img = self.imageVArray
         che = self.check()
         if che:return
-        value = sip.Histogram.calculate_rgb_histogram(img)[0]
+        value = Histogram.calculate_rgb_histogram(img)[0]
         self.plot_histogram(value,"red")
     def showHistGreen(self):
         img = self.imageVArray
         che = self.check()
         if che:return
-        value = sip.Histogram.calculate_rgb_histogram(img)[1]
+        value = Histogram.calculate_rgb_histogram(img)[1]
         self.plot_histogram(value, "green")
     def showHistBlue(self):
         img = self.imageVArray
         che = self.check()
         if che:return
-        value = sip.Histogram.calculate_rgb_histogram(img)[2]
+        value = Histogram.calculate_rgb_histogram(img)[2]
         self.plot_histogram(value, "blue")
 
     def plot_histogram(self, histogram, color):

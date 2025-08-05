@@ -5,7 +5,7 @@ with open("README_PyPI.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="sipa",
-    version="0.1.0",
+    version="0.2.0",
     author="Haydar Kadıoğlu",
     author_email="a.haydar.kadioglu@gmail.com",  
     description="Simple Image Processing Application - A GUI-based image processing tool",
@@ -14,7 +14,7 @@ setup(
     url="https://github.com/haydarkadioglu/simple-image-processing-application",
     packages=find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "License :: OSI Approved :: MIT License",

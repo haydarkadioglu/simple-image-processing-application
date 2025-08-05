@@ -1,4 +1,11 @@
-# PyPI Deployment Instructions for SIPA
+# PyPI Deployment Instructions for SIPA v0.2.0
+
+## Key Features of Version 0.2.0
+
+- **Dual Usage Modes**: Both GUI application and Python library
+- **Backward Compatibility**: Supports legacy `from Functions import SIP` syntax  
+- **Modern Import Structure**: New `import sipa` syntax for cleaner code
+- **Enhanced Documentation**: Comprehensive examples and usage guides
 
 ## Prerequisites
 

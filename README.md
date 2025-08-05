@@ -41,36 +41,108 @@ This application is designed to provide a simple and intuitive platform for lear
 
 ## 🚀 Installation & Usage
 
-### As a Python Package (PyPI)
+SIPA can be used in **two different ways**:
+
+### 1. 📱 As a GUI Application (Recommended)
+
+#### From PyPI
 ```bash
 pip install sipa
 sipa  # Launch GUI application
 ```
 
-### From Source
+#### From Source
 ```bash
 git clone https://github.com/haydarkadioglu/simple-image-processing-application.git
 cd simple-image-processing-application
 pip install -e .
-sipa
+sipa  # Launch GUI application
 ```
 
-### As a Library
+#### Direct Execution
+```bash
+# Clone the repository
+git clone https://github.com/haydarkadioglu/simple-image-processing-application.git
+cd simple-image-processing-application
+
+# Install dependencies
+pip install numpy matplotlib PyQt5 opencv-python
+
+# Run directly
+python main.py
+```
+
+### 2. 📚 As a Python Library
+
+#### Modern Import Style (Recommended)
 ```python
 import sipa
 import numpy as np
 
 # Load your image as numpy array
-image = np.array(...)  # Your image data
+image = np.array(...)  # Your image data (height, width, 3) for RGB
 
 # Convert to grayscale
 gray_image = sipa.Colors.convert_to_gray(image)
 
 # Apply filters
 filtered = sipa.Filters.mean_filter(gray_image, kernel_size=5)
+median_filtered = sipa.Filters.median_filter(image, kernel_size=3)
 
 # Detect edges
 edges = sipa.Filters.detect_edge_prewitt(gray_image)
+
+# Geometric transformations
+rotated = sipa.Rotate.rotate_image(image)
+cropped = sipa.Rotate.crop(image, x1=10, y1=10, x2=100, y2=100)
+zoomed = sipa.Rotate.zoom(image, factor=2.0)
+
+# Morphological operations (for binary images)
+binary = sipa.Colors.convert_to_binary(gray_image, threshold=128)
+eroded = sipa.Histogram.erode(binary, kernel_size=3)
+dilated = sipa.Histogram.dilate(binary, kernel_size=3)
+
+# Histogram operations
+hist = sipa.Histogram.calculate_gray_histogram(gray_image)
+equalized = sipa.Histogram.histogram_equalization(image)
+```
+
+#### Legacy Import Style (Backward Compatibility)
+```python
+# For existing code that uses the old import structure
+from Functions import SIP as sip
+import numpy as np
+
+image = np.array(...)  # Your image data
+
+# Same functionality, old syntax
+gray_image = sip.Colors.convert_to_gray(image)
+filtered = sip.Filters.mean_filter(gray_image, 5)
+edges = sip.Filters.detect_edge_prewitt(gray_image)
+```
+
+### 🎯 Quick Start Example
+```python
+import sipa
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create a test image
+test_image = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
+
+# Basic operations
+gray = sipa.Colors.convert_to_gray(test_image)
+binary = sipa.Colors.convert_to_binary(gray, 128)
+blurred = sipa.Filters.mean_filter(gray, 5)
+edges = sipa.Filters.detect_edge_prewitt(gray)
+
+# Display results
+plt.figure(figsize=(12, 3))
+plt.subplot(1, 4, 1); plt.imshow(gray, cmap='gray'); plt.title('Grayscale')
+plt.subplot(1, 4, 2); plt.imshow(binary, cmap='gray'); plt.title('Binary')
+plt.subplot(1, 4, 3); plt.imshow(blurred, cmap='gray'); plt.title('Blurred')
+plt.subplot(1, 4, 4); plt.imshow(edges, cmap='gray'); plt.title('Edges')
+plt.show()
 ```
 
 ## 📸 Application Screenshots

@@ -4,16 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sipa"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
-    {name = "Haydar Kadıoğlu", email = "haydarkadioglu@example.com"},
+    {name = "Haydar Kadıoğlu", email = "a.haydar.kadioglu@gmail.com"},
 ]
 description = "Simple Image Processing Application - A GUI-based image processing tool"
 readme = "README_PyPI.md"
 license = "MIT"
 requires-python = ">=3.7"
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Operating System :: OS Independent",

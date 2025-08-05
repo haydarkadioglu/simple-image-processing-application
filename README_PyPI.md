@@ -54,18 +54,22 @@ pip install -e .
 
 ## Usage
 
-### As a GUI Application
+SIPA provides **two ways** to use the image processing functionality:
+
+### 1. GUI Application
 ```bash
-sipa
+sipa  # Launch the graphical interface
 ```
 
-### As a Python Library
+### 2. Python Library
+
+#### Modern Import Style
 ```python
 import sipa
 import numpy as np
 
-# Load your image as a numpy array
-image = np.array(...)  # Your image data
+# Load your image as a numpy array (height, width, 3) for RGB
+image = np.array(...)  
 
 # Convert to grayscale
 gray_image = sipa.Colors.convert_to_gray(image)
@@ -77,7 +81,32 @@ filtered_image = sipa.Filters.mean_filter(gray_image, kernel_size=5)
 edges = sipa.Filters.detect_edge_prewitt(gray_image)
 
 # Apply morphological operations
-eroded = sipa.Histogram.erode(gray_image, kernel_size=3)
+binary = sipa.Colors.convert_to_binary(gray_image, threshold=128)
+eroded = sipa.Histogram.erode(binary, kernel_size=3)
+```
+
+#### Legacy Import Style (Backward Compatibility)
+```python
+# For existing code using the old structure
+from Functions import SIP as sip
+
+gray_image = sip.Colors.convert_to_gray(image)
+filtered_image = sip.Filters.mean_filter(gray_image, 5)
+```
+
+### Quick Example
+```python
+import sipa
+import numpy as np
+
+# Create test image
+image = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
+
+# Process image
+gray = sipa.Colors.convert_to_gray(image)
+binary = sipa.Colors.convert_to_binary(gray, 128)
+edges = sipa.Filters.detect_edge_prewitt(gray)
+hist = sipa.Histogram.calculate_gray_histogram(gray)
 ```
 
 ## Requirements

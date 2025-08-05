@@ -7,7 +7,7 @@ setup(
     name="sipa",
     version="0.1.0",
     author="Haydar Kadıoğlu",
-    author_email="haydarkadioglu@example.com",  # Gerçek email adresinizi buraya yazın
+    author_email="a.haydar.kadioglu@gmail.com",  # Gerçek email adresinizi buraya yazın
     description="Simple Image Processing Application - A GUI-based image processing tool",
     long_description=long_description,
     long_description_content_type="text/markdown",
